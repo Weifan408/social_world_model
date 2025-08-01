@@ -1,0 +1,3 @@
+defaults:
+  - layouts@_global_: ${layout_name}
+  - _self_

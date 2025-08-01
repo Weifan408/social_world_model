@@ -1,0 +1,89 @@
+image_obs: True
+training_ratio: 512
+capacity: 1e5
+
+# model attrs
+# "nano": 16,
+# "micro": 32,
+# "mini": 64,
+# "XXS": 128,
+# "XS": 256,
+# "S": 512,
+# "M": 640,
+# "L": 768,
+# "XL": 1024,
+obs_hidden: 64
+
+# "nano": 4,
+# "micro": 8,
+# "mini": 16,
+# "XXS": 32,
+# "XS": 32,
+# "S": 32,
+# "M": 32,
+# "L": 32,
+# "XL": 32,
+n_categoricals: 16
+n_classes: 16
+
+# "nano": 16,
+# "micro": 32,
+# "mini": 64,
+# "XXS": 128,
+# "XS": 256,
+# "S": 512,
+# "M": 1024,
+# "L": 2048,
+# "XL": 4096,
+num_gru_units: 64
+feat_size: 256
+
+# num_dense_layers = {
+#   "nano": 1,
+#   "micro": 1,
+#   "mini": 1,
+#   "XXS": 1,
+#   "XS": 1,
+#   "S": 2,
+#   "M": 3,
+#   "L": 4,
+#   "XL": 5,
+# }
+continue_hidden: 64
+continue_layers: 1
+
+reward_hidden: 64
+reward_layers: 1
+
+lower_bound: -20
+upper_bound: 20
+num_buckets: 255
+
+
+# actor
+actor_hidden: 64
+actor_layers: 1
+
+# critic
+critic_hidden: 64
+critic_layers: 1
+
+world_model_lr: 2e-4
+actor_lr: 5e-4
+critic_lr: 5e-4
+
+batch_size_B: 128
+batch_length_T: 64
+horizon_H: 15
+
+gamma: 0.997
+gae_lambda: 0.95
+entropy_scale: 1e-3
+entropy_annealing: 1.0
+return_normalization_decay: 0.99
+ema_decay: 0.98
+
+world_model_grad_clip_by_global_norm: 1000.0
+critic_grad_clip_by_global_norm: 100.0
+actor_grad_clip_by_global_norm: 100.0
+symlog_obs: False
