@@ -1,6 +1,6 @@
 # Social World Model for Zero-Shot Coordination
 
-This repository is the official implementation of **Social World Model for Zero-Shot Coordination**. Our code is built on ZSC benchmark [ZSC-Eval](https://github.com/sjtu-marl/ZSC-Eval).
+This repository is the official implementation of **Social World Model for Zero-Shot Coordination**.
 
 
 
