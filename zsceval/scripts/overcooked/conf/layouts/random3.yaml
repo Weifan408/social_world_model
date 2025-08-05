@@ -1,6 +1,6 @@
 image_obs: True
 use_vqvae: False
-training_ratio: 512
+training_ratio: 1024
 capacity: 1e5
 
 # model attrs
@@ -73,7 +73,7 @@ world_model_lr: 2e-4
 actor_lr: 5e-4
 critic_lr: 5e-4
 
-batch_size_B: 128
+batch_size_B: 64
 batch_length_T: 64
 horizon_H: 15
 

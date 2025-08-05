@@ -77,6 +77,25 @@ class DreamerModel(nn.Module):
             is_first=is_first,
         )
 
+    def forward_imagine(
+        self, observations, previous_states, is_first, available_actions=None
+    ):
+        states = self.world_model.forward_inference(
+            observations=observations,
+            previous_states=previous_states,
+            is_first=is_first,
+        )
+        
+        return self.imagine(
+            start_states={
+                "obs": observations,
+                "h": states["h"],
+                "z": states["z"],
+                "ava": available_actions,
+                "ids": states["ids"],
+            }
+        )
+    
     def get_initial_state(self):
         """Returns the (current) initial state of the dreamer model (a, h-, z-states).
 
@@ -257,3 +276,54 @@ class DreamerModel(nn.Module):
             ret["actions_ints_dreamed_t0_to_H_B"] = torch.argmax(a_dreamed_H_B, dim=-1)
 
         return ret
+
+    def imagine(self, start_states):
+        a_dreamed_t0_to_H = []
+        a_dreamed_dist_params_t0_to_H = []
+
+        h = start_states["h"]
+        z = start_states["z"]
+        init_ids = start_states["ids"]
+        ava = start_states["ava"]
+        
+
+        h_states_t0_to_H = [h]
+        z_states_prior_t0_to_H = [z]
+        if self.world_model.img_obs:
+            imagine_obs = [start_states['obs'].reshape(init_ids.shape[0], -1) / 255 ]
+        else:
+            imagine_obs = [start_states['obs'].reshape(init_ids.shape[0], -1)]
+        init_ids = init_ids.detach().reshape(init_ids.shape[0], -1)
+
+        a, a_dist_params = self.actor(
+            h=h.detach(),
+            z=z.detach(),
+            available_actions=ava.detach(),
+            ids=init_ids,
+        )
+        a_dreamed_t0_to_H.append(a)
+        a_dreamed_dist_params_t0_to_H.append(a_dist_params)
+
+        for i in range(self.horizon):
+            # Move one step in the dream using the RSSM.
+            h = self.world_model.sequence_model(a=a, h=h, z=z)
+            h_states_t0_to_H.append(h)
+
+            # Compute prior z using dynamics model.
+            z, _ = self.world_model.dynamics_predictor(h=h)
+            z_states_prior_t0_to_H.append(z)
+            imagine_obs.append(self.world_model.decoder(h=h, z=z))
+            ava, _ = self.world_model.av_predictor(h, z)
+            # ids, _ = self.world_model.policy_id_predictor(h)
+            # Compute `a` using actor network.
+            a, a_dist_params = self.actor(
+                h=h.detach(),
+                z=z.detach(),
+                available_actions=ava.detach(),
+                ids=init_ids,
+            )
+            a_dreamed_t0_to_H.append(a)
+            a_dreamed_dist_params_t0_to_H.append(a_dist_params)
+
+        imagine_obs_H_B = torch.stack(imagine_obs, dim=0) # (T, B, ...)
+        return imagine_obs_H_B.permute(1, 0, 2)

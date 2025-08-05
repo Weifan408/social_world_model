@@ -550,6 +550,39 @@ class OvercookedRunner(Runner):
 
         return eval_infos
 
+    def save_imaginations(
+        self, 
+        policy,
+        obs, 
+        prev_states, 
+        is_first, 
+        avail_actions, 
+        infos,
+        env_step,
+        agents
+    ):
+        grid = infos[0]['terrain']
+        imagine_obs = policy.imagine(
+            obs,
+            states=prev_states,
+            is_first=is_first,
+            available_actions=avail_actions,
+        )
+        B, H, W, C = obs.shape
+        T = imagine_obs.shape[1]
+        imagine_obs = imagine_obs.reshape(B, T, H, W, C).cpu().numpy()
+        sorted_agents = sorted(agents, key=lambda pos: pos[0])
+        player_ids = [a for e, a in sorted_agents]
+        for e in range(B):
+            img_path = f"{self.run_dir}/{e}/{env_step}"
+            if not os.path.exists(img_path):
+                os.makedirs(img_path)
+            for t in range(T):
+                _path = f"{img_path}/{t}.png"
+                env_states = self.decode_observation(imagine_obs[e][t], player_ids[e])
+                self.visualizer.display_rendered_state(env_states, grid=grid, img_path=_path, ipython_display=False)
+        return imagine_obs
+    
     def naive_train_with_multi_policy(
         self, reset_map_ea2t_fn=None, reset_map_ea2p_fn=None
     ):

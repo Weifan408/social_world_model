@@ -195,6 +195,29 @@ class DreamerPolicy(nn.Module):
             }
         )
 
+    @torch.no_grad
+    def imagine(
+        self,
+        obs,
+        available_actions=None,
+        states=None,
+        is_first=False,
+    ):
+        batch = {
+            "s_in": states,
+            "obs": obs,
+            "available_actions": available_actions,
+            # "share_obs": buffer.share_obs[step],
+            "is_first": is_first,
+        }
+        batch = to_torch(batch, device=self.device)
+        return self.dreamer_model.forward_imagine(
+            observations=batch['obs'],
+            previous_states=batch['s_in'],
+            is_first=batch['is_first'],
+            available_actions=batch['available_actions'],
+        )
+    
     def to(self, device):
         # self.device = device
         self.encoder.to(device)

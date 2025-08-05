@@ -79,7 +79,7 @@ for (( i=0; i<$len; i++ )); do
         fi
 
         python eval/eval_with_population_dreamer.py --env_name ${env} --algorithm_name ${algo} --experiment_name "${eval_exp}" --layout_name "${layout}" \
-        --num_agents ${num_agents} --seed 1 --episode_length 400 --n_eval_rollout_threads $((n * 20)) --eval_episodes $((n * 40)) --eval_stochastic --dummy_batch_size 2 \
+        --num_agents ${num_agents} --seed 1 --episode_length 400 --n_eval_rollout_threads $((n * 20)) --eval_episodes $((n * 50)) --eval_stochastic --dummy_batch_size 2 \
         --use_proper_time_limits \
         --use_wandb \
         --population_yaml_path "${yml}" --population_size ${population_size} \

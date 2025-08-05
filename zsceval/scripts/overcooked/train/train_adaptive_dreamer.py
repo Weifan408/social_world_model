@@ -177,47 +177,6 @@ def parse_args(args, parser):
         help="Use loaded policy to move in env threads.",
     )
 
-    parser.add_argument(
-        "--batch_size_B",
-        default=64,
-        type=int,
-    )
-
-    parser.add_argument(
-        "--training_ratio",
-        default=512,
-        type=int,
-    )
-
-    parser.add_argument(
-        "--entropy_scale",
-        default=3e-4,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--world_model_lr",
-        default=2e-4,
-        type=float,
-    )
-    parser.add_argument(
-        "--actor_lr",
-        default=5e-4,
-        type=float,
-    )
-    parser.add_argument(
-        "--prefix",
-        default="Final",
-        type=str,
-    )
-
-    parser.add_argument(
-        "--device",
-        default="cuda:0",
-        type=str,
-    )
-    parser.add_argument("--entropy_annealing", default=1.0, type=float)
-
     # eval with fixed policy
     parser.add_argument("--eval_policy", default="", type=str)
     parser.add_argument("--eval_result_path", default=None, type=str)

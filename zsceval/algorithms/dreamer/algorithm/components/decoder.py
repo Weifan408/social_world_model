@@ -132,15 +132,15 @@ class CNNDecoder(nn.Module):
 
         self._use_orthogonal = args.use_orthogonal
         self._use_maxpool2d = args.use_maxpool2d
-        self.output_shape = obs_shape  # 原始观测的形状
-        self.cnn_keys = ["rgb"]  # 与CNNBase保持一致
+        self.output_shape = obs_shape  
+        self.cnn_keys = ["rgb"]  
 
         self.input_img_shape = cnn_output_dim
         self.pre_cnn_mlp = nn.Linear(
             input_dim,
             int(np.prod(self.input_img_shape)),
         )
-        # 构建解码器网络
+
         self.cnn_decoder = self._build_decoder_model(
             obs_shape=obs_shape,
             cnn_keys=self.cnn_keys,

@@ -3,7 +3,6 @@
 env="Overcooked"
 
 layout=$1
-prefix=$2
 
 if [[ "${layout}" == "random0" || "${layout}" == "random0_medium" || "${layout}" == "random1" || "${layout}" == "random3" || "${layout}" == "small_corridor" || "${layout}" == "unident_s" ]]; then
     version="old"
@@ -17,7 +16,7 @@ if [[ "${layout}" == "small_corridor" ]]; then
     entropy_coefs="0.2 0.05 0.01"
     entropy_coef_horizons="0 2.5e6 5e6"
 fi
-reward_shaping_horizon="5e6"
+reward_shaping_horizon="5e7"
 num_env_steps="1e6"
 
 num_agents=2

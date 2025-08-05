@@ -109,33 +109,24 @@ def to_torch(obj, *, device, dtype=torch.float32):
     Same structure as `obj`, with arrays -> torch.Tensors on `device`.
     """
 
-    # 1. numpy ndarray -> tensor
     if isinstance(obj, np.ndarray):
-        # 用 as_tensor 避免额外拷贝；再 .to(device, dtype)
         ten = torch.as_tensor(obj)
         return _cast(ten, device, dtype)
 
-    # 2. torch Tensor -> 搬设备 & dtype 校正
     if isinstance(obj, torch.Tensor):
         return _cast(obj, device, dtype)
 
-    # 3. 容器类型：dict / list / tuple —— 递归处理子元素
     if isinstance(obj, dict):
         return {k: to_torch(v, device=device, dtype=dtype) for k, v in obj.items()}
     if isinstance(obj, list):
         return [to_torch(v, device=device, dtype=dtype) for v in obj]
     if isinstance(obj, tuple):
         return tuple(to_torch(v, device=device, dtype=dtype) for v in obj)
-
-    # 4. 其余类型（int、float、str…）原样返回
     return obj
 
 
 def _cast(tensor, device, dtype):
-    """Helper: move tensor to device; cast dtype (仅 float/complex)."""
-    # 若 tensor 本身已经在目标 device，可避免一次空 copy
     tensor = tensor.to(device=device)
-    # 只有 float / complex 类型才改 dtype，int/bool 不动
     if tensor.is_floating_point() or tensor.is_complex():
         tensor = tensor.to(dtype=dtype)
     return tensor
